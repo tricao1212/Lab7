@@ -11,6 +11,7 @@ import axios from 'axios';
 import {Icon} from 'react-native-paper';
 import Loading from '../components/Loading';
 import {format} from 'date-fns';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Transaction = ({navigation}) => {
   const [trans, setTrans] = useState();
@@ -62,9 +63,11 @@ const Transaction = ({navigation}) => {
     );
   };
 
-  useEffect(() => {
-    fetchTrans();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchTrans();
+    }, []),
+  );
 
   if (!trans) {
     return <Loading />;
@@ -92,7 +95,7 @@ const Transaction = ({navigation}) => {
 const styles = StyleSheet.create({
   status: {
     color: 'red',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   header: {
     backgroundColor: 'pink',

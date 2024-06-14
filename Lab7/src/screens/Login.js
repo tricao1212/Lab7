@@ -12,8 +12,8 @@ import {useDispatch} from 'react-redux';
 import axios from 'axios';
 import Loading from '../components/Loading';
 const Login = ({navigation}) => {
-  const [phone, setPhone] = useState();
-  const [password, setPassword] = useState();
+  const [phone, setPhone] = useState('0373007856');
+  const [password, setPassword] = useState('123');
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
@@ -28,8 +28,7 @@ const Login = ({navigation}) => {
         setLoading(true);
         const data = res.data;
         dispatch(setUser(data));
-        console.log('ok');
-        navigation.navigate("BottomNav");
+        navigation.navigate('BottomNav');
       })
       .catch(error => {
         console.log(error);
@@ -39,18 +38,20 @@ const Login = ({navigation}) => {
       });
   };
 
-  if(loading){
-    return <Loading/>
+  if (loading) {
+    return <Loading />;
   }
-  
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
       <TextInput
+        value={phone}
         placeholder="Phone"
         style={styles.input}
         onChangeText={setPhone}></TextInput>
       <TextInput
+        value={password}
         placeholder="Password"
         style={styles.input}
         onChangeText={setPassword}></TextInput>

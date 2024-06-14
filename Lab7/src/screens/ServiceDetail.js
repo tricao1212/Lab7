@@ -9,6 +9,7 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 import {useSelector} from 'react-redux';
+import {useFocusEffect} from '@react-navigation/native';
 
 const ServiceDetail = ({navigation, route}) => {
   const id = route.params.data;
@@ -21,6 +22,7 @@ const ServiceDetail = ({navigation, route}) => {
       .get('https://kami-backend-5rs0.onrender.com/services/' + id)
       .then(res => {
         setSer(res.data);
+        fectUsers(res.data);
       })
       .catch(error => {
         console.log(error);
@@ -68,12 +70,12 @@ const ServiceDetail = ({navigation, route}) => {
     navigation.navigate('UpdateService', {data: data});
   };
 
-  const fectUsers = async () => {
+  const fectUsers = async (data) => {
     await axios
       .get('https://kami-backend-5rs0.onrender.com/users')
       .then(res => {
         for (const i of res.data) {
-          if (i._id === ser.createdBy) {
+          if (i._id === data.createdBy) {
             setNameCreator(i.name);
             break;
           }
@@ -84,10 +86,11 @@ const ServiceDetail = ({navigation, route}) => {
       });
   };
 
-  useEffect(() => {
-    fetchDetailService();
-    fectUsers();
-  }, [ser]);
+  useFocusEffect(
+    React.useCallback(() => {
+        fetchDetailService();
+    }, []),
+  );
 
   if (!nameCreator) {
     return <Loading />;

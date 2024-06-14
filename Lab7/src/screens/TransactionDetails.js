@@ -10,6 +10,7 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 import {useSelector} from 'react-redux';
+import {useFocusEffect} from '@react-navigation/native';
 
 const TransactionDetails = ({navigation, route}) => {
   const id = route.params.data;
@@ -24,23 +25,31 @@ const TransactionDetails = ({navigation, route}) => {
   };
 
   const handleDelete = async () => {
-    await axios
-      .delete('https://kami-backend-5rs0.onrender.com/transactions/' + details._id, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      })
-      .then(res => {
-        if (res.status == 200) {
-          Alert.alert('Cancel successfully');
-          navigation.goBack();
-        } else {
-          Alert.alert('Something wrong !');
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    {
+      details.status === 'cancelled'
+        ? Alert.alert('This transaction is already cancel!!!')
+        : await axios
+            .delete(
+              'https://kami-backend-5rs0.onrender.com/transactions/' +
+                details._id,
+              {
+                headers: {
+                  Authorization: `Bearer ${user.token}`,
+                },
+              },
+            )
+            .then(res => {
+              if (res.status == 200) {
+                Alert.alert('Cancel successfully');
+                navigation.goBack();
+              } else {
+                Alert.alert('Something wrong !');
+              }
+            })
+            .catch(error => {
+              console.log(error);
+            });
+    }
   };
   const showAlert = (action, id) => {
     Alert.alert(
@@ -76,9 +85,11 @@ const TransactionDetails = ({navigation, route}) => {
     );
   };
 
-  useEffect(() => {
-    fetchDetails();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchDetails();
+    }, []),
+  );
 
   if (!details) {
     return <Loading />;

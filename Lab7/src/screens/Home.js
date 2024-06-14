@@ -15,6 +15,7 @@ import {Icon} from 'react-native-paper';
 import axios from 'axios';
 import BlockService from '../components/BlockService';
 import img from '../../assets/banner.jpg';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Home = ({navigation}) => {
   const user = useSelector(state => state.UserInfo.user);
@@ -32,9 +33,11 @@ const Home = ({navigation}) => {
       });
   };
 
-  useEffect(() => {
-    fectService();
-  }, [service]);
+  useFocusEffect(
+    React.useCallback(() => {
+      fectService();
+    }, []),
+  );
 
   const handleAddService = () => {
     navigation.navigate('AddService');
